@@ -758,6 +758,45 @@ export const excursionTours: TourDetail[] = [
 
 export const allTours: TourDetail[] = [...tukTukTours, ...excursionTours];
 
+const downloadedImages = [
+  '/WhatsApp Image 2026-07-22 at 06.17.21.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.23.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.38.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.45.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.52.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.54-2.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.54.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.55.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.56.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.17.57.jpeg',
+  '/WhatsApp Image 2026-07-22 at 06.18.01.jpeg',
+];
+
+const downloadedImagePositions = [
+  '50% 32%',
+  '50% 24%',
+  '50% 44%',
+  '50% 42%',
+  '50% 38%',
+  '50% 28%',
+  '50% 28%',
+  '50% 60%',
+  '50% 38%',
+  '50% 56%',
+  '50% 38%',
+];
+
+export const tourImages: Record<string, string> = Object.fromEntries(
+  allTours.map((tour, index) => [tour.slug, downloadedImages[index % downloadedImages.length]])
+);
+
+export const tourImagePositions: Record<string, string> = Object.fromEntries(
+  allTours.map((tour, index) => [
+    tour.slug,
+    downloadedImagePositions[index % downloadedImagePositions.length],
+  ])
+);
+
 export function getTourBySlug(slug: string): TourDetail | undefined {
   return allTours.find((t) => t.slug === slug);
 }

@@ -1,15 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-
-const tourOptions = [
-  'Lisboa à la Carte',
-  'Belém',
-  'Half Day',
-  'Alfama & Fado',
-  'Sintra',
-  'Outro / Não sei ainda',
-];
+import { useI18n } from '@/lib/i18n';
+import { excursionTours, tukTukTours } from '@/data/tours';
+import { localizeTour } from '@/lib/tour-i18n';
 
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 shrink-0">
@@ -29,6 +23,18 @@ const ClockIcon = () => (
   </svg>
 );
 
+const InstagramIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 shrink-0" aria-hidden="true">
+    <path d="M12 2.16c3.2 0 3.58.02 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.67 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.15-3.23 1.66-4.77 4.92-4.92C8.42 2.18 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98 1.28.06 1.69.07 4.95.07s3.67-.01 4.95-.07c4.36-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95C23.73 2.7 21.31.27 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.41-11.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z" />
+  </svg>
+);
+
+const TikTokIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 shrink-0" aria-hidden="true">
+    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.3 0 .59.05.87.13V9.4a6.34 6.34 0 105.47 6.27V8.73a8.16 8.16 0 004.77 1.52V6.82c-.34 0-.67-.04-1-.13z" />
+  </svg>
+);
+
 const inputClass =
   'w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-brand-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green transition-colors';
 
@@ -37,6 +43,10 @@ const labelClass = 'block text-xs font-semibold text-gray-600 mb-1.5 uppercase t
 type FormState = 'idle' | 'loading' | 'success' | 'error';
 
 export default function Contacto() {
+  const { locale, messages } = useI18n();
+  const t = messages.contactForm;
+  const localizedTukTukTours = tukTukTours.map((tour) => localizeTour(tour, locale));
+  const localizedExcursions = excursionTours.map((tour) => localizeTour(tour, locale));
   const [formState, setFormState] = useState<FormState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [form, setForm] = useState({
@@ -84,13 +94,13 @@ export default function Contacto() {
         {/* Header */}
         <div className="text-center mb-14">
           <p className="text-brand-green-light text-xs font-bold tracking-widest uppercase mb-3">
-            Fale connosco
+            {t.eyebrow}
           </p>
           <h2 className="font-serif text-4xl md:text-5xl text-white mb-4">
-            Reserve o seu passeio
+            {t.title}
           </h2>
           <p className="text-green-100/80 text-base max-w-md mx-auto">
-            Envie a sua consulta e entraremos em contacto via WhatsApp para confirmar a reserva.
+            {t.subtitle}
           </p>
         </div>
 
@@ -101,7 +111,7 @@ export default function Contacto() {
             <div className="bg-white/10 rounded-2xl p-6 flex flex-col gap-5">
 
               <a
-                href="https://wa.me/351XXXXXXXXX"
+                href="https://wa.me/351910706688"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 group"
@@ -111,19 +121,19 @@ export default function Contacto() {
                 </div>
                 <div>
                   <p className="text-xs text-green-200 font-medium uppercase tracking-wide">WhatsApp</p>
-                  <p className="text-white font-semibold">+351 XXX XXX XXX</p>
+                  <p className="text-white font-semibold">+351 910 706 688</p>
                 </div>
               </a>
 
               <div className="border-t border-white/10" />
 
-              <a href="mailto:info@tukrafa.pt" className="flex items-center gap-4 group">
+              <a href="mailto:elrafatravelcrm@gmail.com" className="flex items-center gap-4 group">
                 <div className="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center text-green-200 shrink-0 group-hover:bg-white/20 transition-colors">
                   <MailIcon />
                 </div>
                 <div>
                   <p className="text-xs text-green-200 font-medium uppercase tracking-wide">Email</p>
-                  <p className="text-white font-semibold">info@tukrafa.pt</p>
+                  <p className="text-white font-semibold">elrafatravelcrm@gmail.com</p>
                 </div>
               </a>
 
@@ -134,22 +144,43 @@ export default function Contacto() {
                   <ClockIcon />
                 </div>
                 <div>
-                  <p className="text-xs text-green-200 font-medium uppercase tracking-wide">Horário</p>
-                  <p className="text-white font-semibold">Todos os dias, 8h – 20h</p>
+                  <p className="text-xs text-green-200 font-medium uppercase tracking-wide">{t.hours}</p>
+                  <p className="text-white font-semibold">{t.schedule}</p>
                 </div>
               </div>
             </div>
 
             {/* Direct WhatsApp CTA */}
             <a
-              href="https://wa.me/351XXXXXXXXX?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20passeios."
+              href="https://wa.me/351910706688?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20passeios."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-white font-semibold py-3.5 rounded-xl transition-colors"
             >
               <WhatsAppIcon />
-              Falar diretamente no WhatsApp
+              {t.whatsapp}
             </a>
+
+            <div className="grid grid-cols-2 gap-3">
+              <a
+                href="https://www.instagram.com/tuk.rafa/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-control flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-3 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+              >
+                <InstagramIcon />
+                Instagram
+              </a>
+              <a
+                href="https://www.tiktok.com/@el_rafa_travel"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-control flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-3 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+              >
+                <TikTokIcon />
+                TikTok
+              </a>
+            </div>
           </div>
 
           {/* Form */}
@@ -161,26 +192,26 @@ export default function Contacto() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl text-brand-dark">Pedido recebido!</h3>
+                <h3 className="font-serif text-2xl text-brand-dark">{t.success}</h3>
                 <p className="text-gray-500 text-sm max-w-xs">
-                  Entraremos em contacto consigo via WhatsApp em breve para confirmar a sua reserva.
+                  {t.successText}
                 </p>
                 <button
                   onClick={() => { setFormState('idle'); setForm({ nome: '', email: '', telefone: '', passeio: '', data: '', pessoas: '2', mensagem: '' }); }}
                   className="mt-2 text-brand-green text-sm font-semibold hover:underline"
                 >
-                  Fazer outro pedido
+                  {t.another}
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={labelClass}>Nome *</label>
-                    <input name="nome" required value={form.nome} onChange={handleChange} placeholder="O seu nome" className={inputClass} />
+                    <label className={labelClass}>{t.name} *</label>
+                    <input name="nome" required value={form.nome} onChange={handleChange} placeholder={t.namePlaceholder} className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Telefone / WhatsApp *</label>
+                    <label className={labelClass}>{t.phone} *</label>
                     <input name="telefone" required value={form.telefone} onChange={handleChange} placeholder="+351 XXX XXX XXX" className={inputClass} />
                   </div>
                 </div>
@@ -192,28 +223,45 @@ export default function Contacto() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={labelClass}>Passeio</label>
+                    <label className={labelClass}>{t.tour}</label>
                     <select name="passeio" value={form.passeio} onChange={handleChange} className={inputClass}>
-                      <option value="">Selecionar passeio</option>
-                      {tourOptions.map((t) => <option key={t} value={t}>{t}</option>)}
+                      <option value="">{t.selectTour}</option>
+                      <optgroup label="Tuk-Tuk">
+                        {localizedTukTukTours.map((tour) => (
+                          <option key={tour.slug} value={tour.slug}>{tour.title}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label={t.excursions}>
+                        {localizedExcursions.map((tour) => (
+                          <option key={tour.slug} value={tour.slug}>{tour.title}</option>
+                        ))}
+                      </optgroup>
                     </select>
                   </div>
                   <div>
-                    <label className={labelClass}>Nº de pessoas</label>
-                    <select name="pessoas" value={form.pessoas} onChange={handleChange} className={inputClass}>
-                      {[1,2,3,4,5].map((n) => <option key={n} value={n}>{n} {n === 1 ? 'pessoa' : 'pessoas'}</option>)}
-                    </select>
+                    <label className={labelClass}>{t.people}</label>
+                    <input
+                      name="pessoas"
+                      type="number"
+                      min="1"
+                      step="1"
+                      required
+                      inputMode="numeric"
+                      value={form.pessoas}
+                      onChange={handleChange}
+                      className={inputClass}
+                    />
                   </div>
                 </div>
 
                 <div>
-                  <label className={labelClass}>Data preferida</label>
+                  <label className={labelClass}>{t.date}</label>
                   <input name="data" type="date" value={form.data} onChange={handleChange} className={inputClass} />
                 </div>
 
                 <div>
-                  <label className={labelClass}>Mensagem</label>
-                  <textarea name="mensagem" rows={3} value={form.mensagem} onChange={handleChange} placeholder="Alguma preferência ou dúvida?" className={`${inputClass} resize-none`} />
+                  <label className={labelClass}>{t.message}</label>
+                  <textarea name="mensagem" rows={3} value={form.mensagem} onChange={handleChange} placeholder={t.messagePlaceholder} className={`${inputClass} resize-none`} />
                 </div>
 
                 {formState === 'error' && (
@@ -228,15 +276,15 @@ export default function Contacto() {
                   {formState === 'loading' ? (
                     <>
                       <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      A enviar…
+                      {t.sending}
                     </>
                   ) : (
-                    'Enviar pedido de reserva'
+                    t.send
                   )}
                 </button>
 
                 <p className="text-center text-xs text-gray-400">
-                  Após o envio, entraremos em contacto via WhatsApp para confirmar.
+                  {t.note}
                 </p>
               </form>
             )}

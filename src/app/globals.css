@@ -20,3 +20,26 @@ body {
   background: var(--color-brand-beige);
   color: var(--color-brand-dark);
 }
+
+/* Make interactive controls respond immediately and reliably on touch devices. */
+button,
+a,
+select,
+input,
+textarea {
+  touch-action: manipulation;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-control {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}

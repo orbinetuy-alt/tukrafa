@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useI18n } from '@/lib/i18n';
 
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -13,9 +16,9 @@ const InstagramIcon = () => (
   </svg>
 );
 
-const FacebookIcon = () => (
+const TikTokIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.3 0 .59.05.87.13V9.4a6.34 6.34 0 105.47 6.27V8.73a8.16 8.16 0 004.77 1.52V6.82c-.34 0-.67-.04-1-.13z" />
   </svg>
 );
 
@@ -25,19 +28,19 @@ const TripAdvisorIcon = () => (
   </svg>
 );
 
-const passeiosLinks = [
-  { href: '/passeios/lisboa-a-la-carte', label: 'Lisboa à la Carte' },
-  { href: '/passeios/belem', label: 'Belém' },
-  { href: '/passeios/half-day', label: 'Half Day' },
-  { href: '/passeios/alfama-fado', label: 'Alfama & Fado' },
-  { href: '/passeios/sintra', label: 'Sintra' },
+const basePasseiosLinks = [
+  { href: '/passeios/lisboa-total', label: 'Lisboa Total' },
+  { href: '/passeios/alfama-graca', label: 'Alfama e Graça' },
+  { href: '/passeios/belem-descobrimentos', label: 'Rota dos Descobrimentos' },
+  { href: '/passeios/chiado-poetico', label: 'Chiado Romântico' },
+  { href: '/passeios/sintra-cascais', label: 'Sintra e Cascais' },
 ];
 
-const explorarLinks = [
-  { href: '#passeios', label: 'Os nossos passeios' },
-  { href: '#reviews', label: 'Avaliações' },
-  { href: '#sobre', label: 'Sobre nós' },
-  { href: '#contactos', label: 'Contactos' },
+const baseExplorarLinks = [
+  { href: '/#passeios', label: 'Os nossos passeios' },
+  { href: '/#reviews', label: 'Avaliações' },
+  { href: '/#sobre', label: 'Sobre nós' },
+  { href: '/#contactos', label: 'Contactos' },
 ];
 
 const externalLinks = [
@@ -47,6 +50,17 @@ const externalLinks = [
 ];
 
 export default function Footer() {
+  const { locale, messages } = useI18n();
+  const t = messages.footer;
+  const passeioLabels = locale === 'en'
+    ? ['Complete Lisbon', 'Alfama and Graça', 'Discoveries Route', 'Romantic Chiado', 'Sintra and Cascais']
+    : locale === 'es'
+      ? ['Lisboa Completa', 'Alfama y Graça', 'Ruta de los Descubrimientos', 'Chiado Romántico', 'Sintra y Cascais']
+      : basePasseiosLinks.map((link) => link.label);
+  const passeiosLinks = basePasseiosLinks.map((link, index) => ({ ...link, label: passeioLabels[index] }));
+  const exploreLabels = [messages.nav.tours, messages.nav.reviews, messages.nav.about, messages.nav.contact];
+  const explorarLinks = baseExplorarLinks.map((link, index) => ({ ...link, label: exploreLabels[index] }));
+
   return (
     <footer className="bg-brand-dark text-gray-400">
 
@@ -62,12 +76,12 @@ export default function Footer() {
             <span className="font-serif text-lg text-white font-semibold tracking-tight">Rafa Travel</span>
           </div>
           <p className="text-sm leading-relaxed text-gray-400">
-            Tours privados em tuk-tuk pela Lisboa mais autêntica. Pick-up no hotel incluído.
+            {t.description}
           </p>
           {/* Social icons */}
           <div className="flex items-center gap-3 mt-1">
             <a
-              href="https://wa.me/351XXXXXXXXX"
+              href="https://wa.me/351910706688"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
@@ -76,7 +90,7 @@ export default function Footer() {
               <WhatsAppIcon />
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/tuk.rafa/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -85,20 +99,20 @@ export default function Footer() {
               <InstagramIcon />
             </a>
             <a
-              href="https://facebook.com"
+              href="https://www.tiktok.com/@el_rafa_travel"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="w-9 h-9 bg-white/5 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors text-gray-400 hover:text-white"
+              aria-label="TikTok"
+              className="w-9 h-9 bg-white/5 hover:bg-black rounded-lg flex items-center justify-center transition-colors text-gray-400 hover:text-white"
             >
-              <FacebookIcon />
+              <TikTokIcon />
             </a>
           </div>
         </div>
 
         {/* Passeios */}
         <div>
-          <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">Passeios</h4>
+          <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">{t.tours}</h4>
           <ul className="flex flex-col gap-3">
             {passeiosLinks.map((link) => (
               <li key={link.href}>
@@ -115,7 +129,7 @@ export default function Footer() {
 
         {/* Explorar */}
         <div>
-          <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">Explorar</h4>
+          <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">{t.explore}</h4>
           <ul className="flex flex-col gap-3">
             {explorarLinks.map((link) => (
               <li key={link.href}>
@@ -132,23 +146,23 @@ export default function Footer() {
 
         {/* Contactos */}
         <div>
-          <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">Contactos</h4>
+          <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">{t.contact}</h4>
           <ul className="flex flex-col gap-3 text-sm">
             <li>
-              <a href="https://wa.me/351XXXXXXXXX" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                +351 XXX XXX XXX
+              <a href="https://wa.me/351910706688" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                +351 910 706 688
               </a>
             </li>
             <li>
-              <a href="mailto:info@tukrafa.pt" className="hover:text-white transition-colors">
-                info@tukrafa.pt
+              <a href="mailto:elrafatravelcrm@gmail.com" className="hover:text-white transition-colors">
+                elrafatravelcrm@gmail.com
               </a>
             </li>
             <li className="text-gray-500">Lisboa, Portugal</li>
           </ul>
 
           <div className="mt-6">
-            <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-4">Encontre-nos em</h4>
+            <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-4">{t.findUs}</h4>
             <ul className="flex flex-col gap-2">
               {externalLinks.map((link) => (
                 <li key={link.href}>
@@ -171,10 +185,10 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
-          <p>© {new Date().getFullYear()} Tukrafa. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} Tukrafa. {t.allRights}</p>
           <div className="flex items-center gap-4">
-            <Link href="/privacidade" className="hover:text-gray-400 transition-colors">Política de Privacidade</Link>
-            <Link href="/termos" className="hover:text-gray-400 transition-colors">Termos e Condições</Link>
+            <Link href="/privacidade" className="hover:text-gray-400 transition-colors">{t.privacy}</Link>
+            <Link href="/termos" className="hover:text-gray-400 transition-colors">{t.terms}</Link>
           </div>
         </div>
       </div>

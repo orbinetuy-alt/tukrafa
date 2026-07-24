@@ -1,4 +1,8 @@
+'use client';
+
 import Link from 'next/link';
+import Image from 'next/image';
+import { useI18n } from '@/lib/i18n';
 
 const StarIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 20 20">
@@ -12,13 +16,10 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-const ImageIcon = () => (
-  <svg className="w-16 h-16 mx-auto mb-3 opacity-25" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-  </svg>
-);
-
 export default function Hero() {
+  const { messages } = useI18n();
+  const t = messages.hero;
+
   return (
     <section
       className="relative bg-brand-beige"
@@ -38,35 +39,35 @@ export default function Hero() {
           {/* Badge */}
           <div className="flex items-center gap-2.5 bg-white/80 border border-brand-green/25 rounded-full px-4 py-2 backdrop-blur-sm">
             <span className="w-2.5 h-2.5 bg-brand-green rounded-sm shrink-0" />
-            <span className="text-brand-green text-sm font-medium">Guia certificado · Tours privados</span>
+            <span className="text-brand-green text-sm font-medium">{t.badge}</span>
           </div>
 
           {/* Headline */}
           <h1 className="font-serif text-5xl lg:text-6xl text-brand-dark leading-[1.1] tracking-tight">
-            Descubra Portugal com quem vive a cidade.
+            {t.title}
           </h1>
 
           {/* Subtext */}
           <p className="text-gray-600 text-lg leading-relaxed max-w-lg">
-            Tours privados pelos bairros históricos, paisagens únicas e segredos locais — recolha incluída no seu hotel.
+            {t.subtitle}
           </p>
 
           {/* CTA buttons */}
           <div className="flex flex-wrap items-center gap-3 mt-1">
             <Link
-              href="#reservar"
+              href="#passeios"
               className="bg-brand-red hover:bg-brand-red-dark text-white font-semibold px-7 py-3.5 rounded-full transition-colors shadow-sm"
             >
-              Reservar agora →
+              {t.book}
             </Link>
             <Link
-              href="https://wa.me/351000000000"
+              href="https://wa.me/351910706688"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 border-2 border-gray-300 hover:border-brand-green text-gray-800 font-semibold px-7 py-3.5 rounded-full transition-colors bg-white/60"
             >
               <WhatsAppIcon />
-              Falar no WhatsApp
+              {t.whatsapp}
             </Link>
           </div>
 
@@ -79,21 +80,27 @@ export default function Hero() {
             </div>
             <span className="font-semibold text-gray-800">4.9 Google</span>
             <span className="text-gray-300">|</span>
-            <span>+500 viajantes felizes</span>
+            <span>{t.travelers}</span>
           </div>
         </div>
 
         {/* ── Right column — image card ── */}
         <div className="flex-1 flex justify-center lg:justify-end w-full lg:max-w-[48%]">
-          <div className="relative w-full max-w-110">
+          <div className="relative w-full max-w-80 lg:max-w-90">
 
             {/* Decorative offset border */}
             <div className="absolute inset-0 border-4 border-brand-green rounded-2xl translate-x-3 translate-y-3 rounded-br-3xl" />
 
-            {/* Image placeholder */}
-            <div className="relative z-10 w-full aspect-4/3 bg-brand-beige-dark rounded-2xl flex flex-col items-center justify-center border border-brand-green/15 overflow-hidden">
-              <ImageIcon />
-              <p className="text-sm text-gray-400 font-medium">Foto do Passeio</p>
+            {/* Tour image */}
+            <div className="relative z-10 w-full aspect-9/16 bg-brand-beige-dark rounded-2xl border border-brand-green/15 overflow-hidden">
+              <Image
+                src="/hero.jpg"
+                alt="Rafa com uma família durante um passeio de tuk-tuk em Lisboa"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 440px"
+                className="object-cover object-center"
+              />
             </div>
 
             {/* TripAdvisor badge — top right */}
@@ -104,15 +111,15 @@ export default function Hero() {
                 ))}
               </div>
               <span className="text-xs font-bold text-gray-700">TripAdvisor</span>
-              <span className="text-[10px] text-gray-400">Guia certificado</span>
+              <span className="text-[10px] text-gray-400">{t.certified}</span>
             </div>
 
             {/* Price badge — bottom left */}
             <div className="absolute -bottom-5 left-5 z-20 bg-brand-red rounded-xl px-4 py-3 text-white shadow-lg">
-              <p className="text-[10px] uppercase font-bold tracking-widest opacity-80 mb-0.5">Desde</p>
+              <p className="text-[10px] uppercase font-bold tracking-widest opacity-80 mb-0.5">{t.from}</p>
               <p className="text-2xl font-bold leading-none">
-                €XX{' '}
-                <span className="text-sm font-medium opacity-85">/ tour privado</span>
+                €120{' '}
+                <span className="text-sm font-medium opacity-85">{t.privateTour}</span>
               </p>
             </div>
           </div>

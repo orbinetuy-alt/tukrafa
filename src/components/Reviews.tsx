@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { ReviewsData } from '@/app/api/reviews/route';
+import { useI18n } from '@/lib/i18n';
 
 const StarIcon = ({ filled }: { filled: boolean }) => (
   <svg
@@ -39,13 +40,13 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
-function timeAgo(timestamp: number): string {
+function timeAgo(timestamp: number, locale: 'pt' | 'en' | 'es', labels: ReturnType<typeof useI18n>['messages']['reviews']): string {
   const seconds = Math.floor(Date.now() / 1000 - timestamp);
-  if (seconds < 60 * 60 * 24 * 30) return 'Este mês';
+  if (seconds < 60 * 60 * 24 * 30) return labels.month;
   const months = Math.floor(seconds / (60 * 60 * 24 * 30));
-  if (months < 12) return `Há ${months} ${months === 1 ? 'mês' : 'meses'}`;
+  if (months < 12) return locale === 'en' ? `${months} ${labels.months}` : `${labels.ago} ${months} ${months === 1 ? (locale === 'es' ? 'mes' : 'mês') : labels.months}`;
   const years = Math.floor(months / 12);
-  return `Há ${years} ${years === 1 ? 'ano' : 'anos'}`;
+  return locale === 'en' ? `${years} ${years === 1 ? labels.year : labels.years}` : `${labels.ago} ${years} ${years === 1 ? labels.year : labels.years}`;
 }
 
 const AVATAR_COLORS = [
@@ -57,6 +58,8 @@ const AVATAR_COLORS = [
 ];
 
 export default function Reviews() {
+  const { locale, messages } = useI18n();
+  const t = messages.reviews;
   const [data, setData] = useState<ReviewsData | null>(null);
 
   useEffect(() => {
@@ -73,10 +76,10 @@ export default function Reviews() {
         {/* Section header */}
         <div className="text-center mb-14">
           <p className="text-brand-green text-xs font-bold tracking-widest uppercase mb-3">
-            O que dizem os nossos clientes
+            {t.eyebrow}
           </p>
           <h2 className="font-serif text-4xl md:text-5xl text-brand-dark mb-4">
-            Avaliações Google
+            {t.title}
           </h2>
 
           {/* Overall rating */}
@@ -85,14 +88,14 @@ export default function Reviews() {
               <GoogleIcon />
               <span className="text-3xl font-bold text-brand-dark">{data.rating.toFixed(1)}</span>
               <Stars rating={Math.round(data.rating)} />
-              <span className="text-gray-400 text-sm">({data.user_ratings_total} avaliações)</span>
+              <span className="text-gray-400 text-sm">({data.user_ratings_total} {t.count})</span>
             </div>
           )}
 
           {!data && (
             <div className="flex items-center justify-center gap-2 mt-6 text-gray-400 text-sm">
               <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-brand-green rounded-full animate-spin" />
-              A carregar avaliações…
+              {t.loading}
             </div>
           )}
         </div>
@@ -123,7 +126,7 @@ export default function Reviews() {
                   )}
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-brand-dark truncate">{review.author_name}</p>
-                    <p className="text-xs text-gray-400">{timeAgo(review.time)}</p>
+                    <p className="text-xs text-gray-400">{timeAgo(review.time, locale, t)}</p>
                   </div>
                   <div className="ml-auto shrink-0">
                     <GoogleIcon />
@@ -149,7 +152,7 @@ export default function Reviews() {
             className="inline-flex items-center gap-2 border border-gray-300 hover:border-brand-green hover:text-brand-green text-gray-600 text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
           >
             <GoogleIcon />
-            Ver todas as avaliações no Google
+            {t.all}
           </a>
         </div>
 
