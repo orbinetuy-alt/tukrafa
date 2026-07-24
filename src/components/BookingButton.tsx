@@ -3,17 +3,20 @@
 import { useState } from 'react';
 import { BookingModal } from '@/components/BookingModal';
 import type { TourDetail } from '@/data/tours';
+import { useI18n } from '@/lib/i18n';
 
 export function BookingButton({ tour }: { tour: TourDetail }) {
   const [open, setOpen] = useState(false);
+  const { messages } = useI18n();
 
   return (
     <>
       <button
+        type="button"
         onClick={() => setOpen(true)}
-        className="block w-full bg-brand-red hover:bg-brand-red-dark text-white text-sm font-bold py-4 rounded-xl text-center tracking-wider transition-colors"
+        className="touch-control block w-full min-h-12 bg-brand-red hover:bg-brand-red-dark text-white text-sm font-bold py-4 rounded-xl text-center tracking-wider transition-colors"
       >
-        RESERVE O TOUR AGORA
+        {messages.detail.book}
       </button>
       {open && <BookingModal tour={tour} onClose={() => setOpen(false)} />}
     </>

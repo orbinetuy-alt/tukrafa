@@ -1,16 +1,4 @@
-const stats = [
-  { value: '+500', label: 'Turistas satisfeitos' },
-  { value: '5★', label: 'Rating no Google' },
-  { value: '8', label: 'Anos de experiência' },
-  { value: '100%', label: 'Tours privativos' },
-];
-
-const highlights = [
-  'Guia certificado pelo Turismo de Portugal',
-  'Nascido e criado em Lisboa — conhece cada rua',
-  'Fala português, inglês e espanhol',
-  'Pick-up gratuito no seu hotel',
-];
+'use client';
 
 const CheckIcon = () => (
   <svg className="w-4 h-4 text-brand-green shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -25,8 +13,13 @@ const QuoteIcon = () => (
 );
 
 import Image from 'next/image';
+import { useI18n } from '@/lib/i18n';
 
 export default function SobreNos() {
+  const { locale, messages } = useI18n();
+  const t = messages.about;
+  const stats = ['+500', locale === 'en' ? '4.9★' : '4,9★', '13+', '100%']
+    .map((value, index) => ({ value, label: t.stats[index] }));
   return (
     <section id="sobre" className="bg-brand-beige py-20 px-6">
       <div className="max-w-6xl mx-auto">
@@ -34,10 +27,10 @@ export default function SobreNos() {
         {/* Section label */}
         <div className="text-center mb-14">
           <p className="text-brand-green text-xs font-bold tracking-widest uppercase mb-3">
-            O seu guia
+            {t.eyebrow}
           </p>
           <h2 className="font-serif text-4xl md:text-5xl text-brand-dark">
-            Sobre nós
+            {t.title}
           </h2>
         </div>
 
@@ -65,8 +58,8 @@ export default function SobreNos() {
                 </svg>
               </div>
               <div>
-                <p className="text-xs font-bold text-brand-dark">Guia Certificado</p>
-                <p className="text-xs text-gray-400">Turismo de Portugal</p>
+                <p className="text-xs font-bold text-brand-dark">{t.certified}</p>
+                <p className="text-xs text-gray-400">{t.tourism}</p>
               </div>
             </div>
           </div>
@@ -76,19 +69,22 @@ export default function SobreNos() {
             <div>
               <QuoteIcon />
               <h3 className="font-serif text-3xl text-brand-dark mt-2 mb-4">
-                Olá, sou o [Nome]!
+                {t.hello}
               </h3>
               <p className="text-gray-600 leading-relaxed mb-4">
-                Nasci e cresci em Lisboa — esta cidade é a minha paixão. Há mais de 8 anos levo turistas de todo o mundo a descobrir os seus bairros históricos, os seus miradouros escondidos e as suas histórias mais fascinantes.
+                {t.bio1}
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Acredito que a melhor forma de conhecer Lisboa é de tuk-tuk: devagar, pelos bairros mais autênticos, sem pressa, com um guia que realmente conhece a cidade. Cada passeio é privado e personalizado — porque cada viajante é único.
+                {t.bio2}
+              </p>
+              <p className="text-brand-green font-semibold leading-relaxed mt-4">
+                {t.closing}
               </p>
             </div>
 
             {/* Highlights */}
             <ul className="flex flex-col gap-3">
-              {highlights.map((item) => (
+              {t.highlights.map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
                   <CheckIcon />
                   {item}

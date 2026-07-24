@@ -1,26 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-
-const navLinks = [
-  { hash: 'passeios', label: 'Passeios' },
-  { hash: 'reviews', label: 'Reviews' },
-  { hash: 'sobre', label: 'Sobre Nós' },
-  { hash: 'contactos', label: 'Contactos' },
-];
+import { locales, useI18n } from '@/lib/i18n';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { locale, messages, setLocale } = useI18n();
   const isHome = pathname === '/';
+  const navLinks = [
+    { hash: 'passeios', label: messages.nav.tours },
+    { hash: 'reviews', label: messages.nav.reviews },
+    { hash: 'sobre', label: messages.nav.about },
+    { hash: 'contactos', label: messages.nav.contact },
+  ];
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   const linkHref = (hash: string) => (isHome ? `#${hash}` : `/#${hash}`);
 
   return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+    <header className="relative isolate bg-white border-b border-gray-100 sticky top-0 z-[100] shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
         <Link href="/" className="flex items-center gap-2">
@@ -41,23 +46,29 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Language selector */}
-        <div className="hidden md:flex items-center gap-1.5">
-          <button className="bg-brand-green text-white text-xs font-bold px-3 py-1.5 rounded-full">
-            PT
-          </button>
-          <button className="text-gray-500 hover:text-gray-800 text-xs font-medium px-2 py-1.5 rounded-full hover:bg-gray-100 transition-colors">
-            EN
-          </button>
-          <button className="text-gray-500 hover:text-gray-800 text-xs font-medium px-2 py-1.5 rounded-full hover:bg-gray-100 transition-colors">
-            ES
-          </button>
+        <div className="hidden md:flex items-center gap-1.5" aria-label="Language selector">
+          {locales.map((item) => (
+            <button
+              key={item}
+              type="button"
+              onClick={() => setLocale(item)}
+              aria-pressed={locale === item}
+              className={`touch-control ${locale === item
+                ? 'bg-brand-green text-white text-xs font-bold px-3 py-1.5 rounded-full'
+                : 'text-gray-500 hover:text-gray-800 text-xs font-medium px-2 py-1.5 rounded-full hover:bg-gray-100 transition-colors'}`}
+            >
+              {item.toUpperCase()}
+            </button>
+          ))}
         </div>
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          type="button"
+          className="touch-control md:hidden min-w-11 min-h-11 p-2 rounded-lg hover:bg-gray-100 transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
           aria-label="Abrir menu"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -76,21 +87,34 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-6 py-5 flex flex-col gap-4">
+        <div id="mobile-navigation" className="relative z-[110] md:hidden border-t border-gray-100 bg-white px-6 py-5 flex flex-col gap-2 shadow-lg">
           {navLinks.map((link) => (
             <Link
               key={link.hash}
               href={linkHref(link.hash)}
-              className="text-gray-700 hover:text-brand-green text-sm font-medium py-1 transition-colors"
+              className="touch-control text-gray-700 hover:text-brand-green text-sm font-medium min-h-11 py-3 transition-colors"
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
             </Link>
           ))}
-          <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-            <button className="bg-brand-green text-white text-xs font-bold px-3 py-1.5 rounded-full">PT</button>
-            <button className="text-gray-500 text-xs font-medium px-2 py-1.5">EN</button>
-            <button className="text-gray-500 text-xs font-medium px-2 py-1.5">ES</button>
+          <div className="flex items-center gap-2 pt-2 border-t border-gray-100" aria-label="Language selector">
+            {locales.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => {
+                  setLocale(item);
+                  setMenuOpen(false);
+                }}
+                aria-pressed={locale === item}
+                className={`touch-control min-h-11 min-w-11 ${locale === item
+                  ? 'bg-brand-green text-white text-xs font-bold px-3 py-1.5 rounded-full'
+                  : 'text-gray-500 text-xs font-medium px-3 py-1.5 rounded-full'}`}
+              >
+                {item.toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
       )}

@@ -33,8 +33,6 @@ function padDate(n: number) { return String(n).padStart(2, '0'); }
 interface BookingModalProps { tour: TourDetail; onClose: () => void; }
 
 export function BookingModal({ tour, onClose }: BookingModalProps) {
-  const [mounted, setMounted] = useState(false);
-
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -47,9 +45,8 @@ export function BookingModal({ tour, onClose }: BookingModalProps) {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [confirmationEmailSent, setConfirmationEmailSent] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     // iOS Safari ignores overflow:hidden on body — use position:fixed trick
@@ -70,8 +67,6 @@ export function BookingModal({ tour, onClose }: BookingModalProps) {
     document.addEventListener('keydown', fn);
     return () => document.removeEventListener('keydown', fn);
   }, [onClose]);
-
-  if (!mounted) return null;
 
   const daysInMonth = getDaysInMonth(calMonth.year, calMonth.month);
   const firstDay = getFirstDayOfWeek(calMonth.year, calMonth.month);
@@ -109,7 +104,9 @@ export function BookingModal({ tour, onClose }: BookingModalProps) {
           email: email.trim(),
         }),
       });
+      const result = await res.json();
       if (!res.ok) throw new Error();
+      setConfirmationEmailSent(result.confirmationEmailSent !== false);
       setStep('success');
     } catch {
       setError('Ocorreu um erro. Por favor tente novamente.');
@@ -119,12 +116,12 @@ export function BookingModal({ tour, onClose }: BookingModalProps) {
   }
 
   const modal = (
-    <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 z-[9999] isolate flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="absolute inset-0 z-0 bg-black/50" onClick={onClose} />
 
       {/* Sheet */}
-      <div className="relative bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[96dvh] sm:max-h-[92vh] overflow-hidden">
+      <div className="relative z-10 pointer-events-auto bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[96dvh] sm:max-h-[92vh] overflow-hidden">
 
         {/* Sticky header */}
         <div className="flex items-center justify-between px-6 pt-5 pb-3 shrink-0 border-b border-gray-100">
@@ -298,7 +295,9 @@ export function BookingModal({ tour, onClose }: BookingModalProps) {
               </p>
               <p className="text-xs text-gray-400 mt-4 flex items-center gap-1.5">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                Verifique o seu email para a confirmação
+                {confirmationEmailSent
+                  ? 'Verifique o seu email para a confirmação'
+                  : 'A reserva chegou ao Rafa, mas a confirmação por email não pôde ser enviada.'}
               </p>
             </div>
           )}

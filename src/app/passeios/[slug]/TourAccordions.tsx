@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import type { TourDetail } from '@/data/tours';
+import { useI18n } from '@/lib/i18n';
+import { localizeTour } from '@/lib/tour-i18n';
 
 interface Props {
-  itinerary?: string[];
-  howItWorks?: string[];
-  durationOptions?: { label: string; price: string }[];
-  canInclude?: string[];
-  included: string[];
-  notIncluded: string[];
+  tour: TourDetail;
 }
 
 function ChevronIcon({ open }: { open: boolean }) {
@@ -69,15 +67,14 @@ const XIcon = () => (
 );
 
 export default function TourAccordions({
-  itinerary,
-  howItWorks,
-  durationOptions,
-  canInclude,
-  included,
-  notIncluded,
+  tour: sourceTour,
 }: Props) {
+  const { locale, messages } = useI18n();
+  const tour = localizeTour(sourceTour, locale);
+  const { itinerary, howItWorks, durationOptions, canInclude, included, notIncluded } = tour;
+  const labels = messages.detail;
   const isFlexible = !!durationOptions;
-  const firstTitle = isFlexible ? 'Roteiro à medida' : 'Percurso';
+  const firstTitle = isFlexible ? labels.customRoute : labels.route;
 
   return (
     <div className="mt-8">
@@ -88,7 +85,7 @@ export default function TourAccordions({
             {/* How it works */}
             {howItWorks && (
               <div>
-                <p className="text-sm font-semibold text-brand-dark mb-3">Como funciona</p>
+                <p className="text-sm font-semibold text-brand-dark mb-3">{labels.how}</p>
                 <ol className="space-y-3">
                   {howItWorks.map((step, i) => (
                     <li key={i} className="flex items-start gap-3">
@@ -105,7 +102,7 @@ export default function TourAccordions({
             {/* Duration selector */}
             {durationOptions && (
               <div>
-                <p className="text-sm font-semibold text-brand-dark mb-3">Escolha a duração</p>
+                <p className="text-sm font-semibold text-brand-dark mb-3">{labels.duration}</p>
                 <div className="flex flex-wrap gap-2">
                   {durationOptions.map((opt) => (
                     <div
@@ -124,9 +121,9 @@ export default function TourAccordions({
             {canInclude && (
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <p className="text-sm font-semibold text-brand-dark">Pode incluir</p>
+                  <p className="text-sm font-semibold text-brand-dark">{labels.canInclude}</p>
                   <span className="text-xs bg-brand-green/10 text-brand-green font-medium px-2 py-0.5 rounded-full">
-                    à sua escolha
+                    {labels.yourChoice}
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6">
@@ -155,7 +152,7 @@ export default function TourAccordions({
       </Accordion>
 
       {/* Accordion 2: What's included */}
-      <Accordion title="O que está incluído">
+      <Accordion title={labels.included}>
         <ul className="space-y-2.5">
           {included.map((item) => (
             <li key={item} className="flex items-start gap-3">
@@ -167,7 +164,7 @@ export default function TourAccordions({
       </Accordion>
 
       {/* Accordion 3: What's not included */}
-      <Accordion title="O que não está incluído">
+      <Accordion title={labels.notIncluded}>
         <ul className="space-y-2.5">
           {notIncluded.map((item) => (
             <li key={item} className="flex items-start gap-3">

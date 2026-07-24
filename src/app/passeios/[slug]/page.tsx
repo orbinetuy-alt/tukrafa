@@ -1,15 +1,19 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TourAccordions from './TourAccordions';
 import { BookingButton } from '@/components/BookingButton';
+import { LocalizedDetailText, LocalizedTourList, LocalizedTourText } from '@/components/LocalizedTour';
 import {
   getTourBySlug,
   getRelatedTours,
   allTours,
   categoryLabel,
   categoryColor,
+  tourImages,
+  tourImagePositions,
 } from '@/data/tours';
 
 export async function generateStaticParams() {
@@ -59,52 +63,35 @@ const GlobeIcon = () => (
   </svg>
 );
 
-const CheckIcon = () => (
-  <svg className="w-4 h-4 shrink-0 text-brand-green" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-  </svg>
-);
-
 const ShieldIcon = () => (
   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
   </svg>
 );
 
-// ── Image placeholder ────────────────────────────────────────────────────────
-
-function HeroPlaceholder({ title, subtitle }: { title: string; subtitle: string }) {
+function TourHero({ tour }: { tour: NonNullable<ReturnType<typeof getTourBySlug>> }) {
   return (
-    <div className="relative w-full h-72 md:h-96 bg-linear-to-br from-brand-dark via-brand-green-dark to-brand-green overflow-hidden">
-      {/* subtle texture */}
-      <div className="absolute inset-0 opacity-10"
+    <div className="relative w-full h-72 md:h-96 bg-brand-dark overflow-hidden">
+      <Image
+        src={tourImages[tour.slug]}
+        alt={`${tour.title} — Rafa Travel`}
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
         style={{
-          backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+          objectPosition:
+            tour.slug === 'algarve-benagil'
+              ? '50% 70%'
+              : tourImagePositions[tour.slug],
         }}
       />
-      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-black/5" />
       <div className="absolute bottom-0 left-0 px-6 md:px-10 py-8">
         <h1 className="font-serif text-3xl md:text-5xl text-white font-bold leading-tight drop-shadow-md">
-          {title}
+          <LocalizedTourText tour={tour} field="title" />
         </h1>
-        <p className="text-white/80 text-sm md:text-base mt-2">{subtitle}</p>
-      </div>
-    </div>
-  );
-}
-
-function ThumbnailPlaceholder({ active }: { active?: boolean }) {
-  return (
-    <div
-      className={`h-16 md:h-20 w-24 md:w-32 rounded-lg shrink-0 overflow-hidden border-2 transition-colors ${
-        active ? 'border-brand-green' : 'border-transparent'
-      }`}
-    >
-      <div className="w-full h-full bg-brand-beige-dark flex items-center justify-center">
-        <svg className="w-6 h-6 opacity-20" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
+        <p className="text-white/80 text-sm md:text-base mt-2"><LocalizedTourText tour={tour} field="subtitle" /></p>
       </div>
     </div>
   );
@@ -117,11 +104,15 @@ function RelatedTourCard({
 }) {
   return (
     <Link href={`/passeios/${tour.slug}`} className="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      {/* Image placeholder */}
-      <div className="h-44 bg-brand-beige-dark flex items-center justify-center">
-        <svg className="w-10 h-10 opacity-20" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
+      <div className="relative h-44 bg-brand-beige-dark">
+        <Image
+          src={tourImages[tour.slug]}
+          alt={`${tour.title} — Rafa Travel`}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          style={{ objectPosition: tourImagePositions[tour.slug] }}
+        />
       </div>
       <div className="p-4">
         <div className="flex items-center gap-2 text-xs text-gray-400 mb-1.5">
@@ -160,29 +151,19 @@ export default async function TourDetailPage({
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-3 text-sm text-gray-400 flex items-center gap-2">
           <Link href="/" className="hover:text-brand-green transition-colors">
-            Início
+            <LocalizedDetailText field="home" />
           </Link>
           <span>/</span>
           <Link href="/#passeios" className="hover:text-brand-green transition-colors">
-            Passeios
+            <LocalizedDetailText field="tours" />
           </Link>
           <span>/</span>
-          <span className="text-brand-dark font-medium truncate">{tour.title}</span>
+          <span className="text-brand-dark font-medium truncate"><LocalizedTourText tour={tour} field="title" /></span>
         </div>
       </div>
 
       {/* Hero */}
-      <HeroPlaceholder title={tour.title} subtitle={tour.subtitle} />
-
-      {/* Thumbnail gallery strip */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex gap-3 overflow-x-auto">
-          <ThumbnailPlaceholder active />
-          <ThumbnailPlaceholder />
-          <ThumbnailPlaceholder />
-          <ThumbnailPlaceholder />
-        </div>
-      </div>
+      <TourHero tour={tour} />
 
       {/* Main content */}
       <div className="max-w-6xl mx-auto w-full px-6 py-10 flex-1">
@@ -193,13 +174,13 @@ export default async function TourDetailPage({
             {categoryLabel[tour.category]}
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-gray-200 text-gray-600">
-            <ClockIcon /> {tour.duration}
+            <ClockIcon /> <LocalizedTourText tour={tour} field="duration" />
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-gray-200 text-gray-600">
-            <PeopleIcon /> {tour.maxPax}
+            <PeopleIcon /> <LocalizedTourText tour={tour} field="maxPax" />
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-gray-200 text-gray-600">
-            <PinIcon /> {tour.pickup}
+            <PinIcon /> <LocalizedTourText tour={tour} field="pickup" />
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-gray-200 text-gray-600">
             <GlobeIcon /> {tour.languages.join(' · ')}
@@ -212,17 +193,10 @@ export default async function TourDetailPage({
           {/* ── Left column ─────────────────────────── */}
           <div className="flex-1 min-w-0">
             <p className="text-gray-600 leading-relaxed text-base">
-              {tour.longDescription}
+              <LocalizedTourText tour={tour} field="longDescription" />
             </p>
 
-            <TourAccordions
-              itinerary={tour.itinerary}
-              howItWorks={tour.howItWorks}
-              durationOptions={tour.durationOptions}
-              canInclude={tour.canInclude}
-              included={tour.included}
-              notIncluded={tour.notIncluded}
-            />
+            <TourAccordions tour={tour} />
           </div>
 
           {/* ── Right sidebar ────────────────────────── */}
@@ -230,22 +204,22 @@ export default async function TourDetailPage({
             <div className="sticky top-24 border border-gray-200 rounded-2xl p-6 shadow-sm">
 
               {/* Title + price */}
-              <p className="text-sm text-gray-500 mb-1">{tour.title}</p>
+              <p className="text-sm text-gray-500 mb-1"><LocalizedTourText tour={tour} field="title" /></p>
               <div className="flex items-end justify-between mb-1">
                 <div>
-                  <p className="text-sm text-gray-500 leading-none mb-1">A partir de</p>
+                  <p className="text-sm text-gray-500 leading-none mb-1"><LocalizedDetailText field="from" /></p>
                   {tour.priceFrom > 0 ? (
                     <p className="text-4xl font-bold text-brand-dark leading-none">
                       €{tour.priceFrom}
                     </p>
                   ) : (
                     <p className="text-2xl font-bold text-brand-dark leading-none">
-                      Sob consulta
+                      <LocalizedDetailText field="quote" />
                     </p>
                   )}
                 </div>
                 <p className="text-xs text-gray-400 text-right leading-snug max-w-32">
-                  {tour.sidebarPriceNote}
+                  <LocalizedTourText tour={tour} field="sidebarPriceNote" />
                 </p>
               </div>
 
@@ -253,12 +227,7 @@ export default async function TourDetailPage({
 
               {/* Feature checklist */}
               <ul className="space-y-2.5 mb-6">
-                {tour.sidebarFeatures.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2 text-sm text-gray-600">
-                    <CheckIcon />
-                    {feature}
-                  </li>
-                ))}
+                <LocalizedTourList tour={tour} field="sidebarFeatures" />
               </ul>
 
               {/* CTA */}
@@ -267,7 +236,7 @@ export default async function TourDetailPage({
               {/* Trust */}
               <p className="flex items-center justify-center gap-1.5 text-xs text-gray-400 mt-3">
                 <ShieldIcon />
-                Reserva segura · Sem compromisso
+                <LocalizedDetailText field="safe" />
               </p>
             </div>
           </aside>
@@ -280,7 +249,7 @@ export default async function TourDetailPage({
         <section className="bg-gray-50 py-14 px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="font-serif text-2xl md:text-3xl text-brand-dark mb-8">
-              Outros passeios que vai adorar
+              <LocalizedDetailText field="related" />
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {related.map((t) => (
