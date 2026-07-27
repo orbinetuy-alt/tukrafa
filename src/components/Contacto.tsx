@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { excursionTours, tukTukTours } from '@/data/tours';
 import { localizeTour } from '@/lib/tour-i18n';
+import { trackEvent } from '@/lib/analytics';
 
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 shrink-0">
@@ -81,6 +82,10 @@ export default function Contacto() {
       }
 
       setFormState('success');
+      trackEvent('generate_lead', {
+        form_name: 'contacto',
+        tour_slug: form.passeio || undefined,
+      });
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : 'Erro ao enviar. Tente novamente.');
       setFormState('error');

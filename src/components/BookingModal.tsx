@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { TourDetail } from '@/data/tours';
+import { trackEvent } from '@/lib/analytics';
 
 const TIME_SLOTS = [
   '9:00', '10:00', '11:00', '12:00', '13:00',
@@ -108,6 +109,13 @@ export function BookingModal({ tour, onClose }: BookingModalProps) {
       if (!res.ok) throw new Error();
       setConfirmationEmailSent(result.confirmationEmailSent !== false);
       setStep('success');
+      trackEvent('booking_request', {
+        tour_slug: tour.slug,
+        tour_name: tour.title,
+        people,
+        value: tour.priceFrom,
+        currency: 'EUR',
+      });
     } catch {
       setError('Ocorreu um erro. Por favor tente novamente.');
     } finally {
