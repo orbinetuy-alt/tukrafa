@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
@@ -15,6 +16,7 @@ import {
   tourImages,
   tourImagePositions,
 } from '@/data/tours';
+import { siteConfig } from '@/lib/site';
 
 export async function generateStaticParams() {
   return allTours.map((tour) => ({ slug: tour.slug }));
@@ -24,13 +26,32 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
   const { slug } = await params;
   const tour = getTourBySlug(slug);
   if (!tour) return {};
   return {
-    title: `${tour.title} — Rafa Travel`,
+    title: tour.title,
     description: tour.description,
+    alternates: {
+      canonical: `/passeios/${tour.slug}`,
+    },
+    openGraph: {
+      type: 'website',
+      url: `/passeios/${tour.slug}`,
+      title: tour.title,
+      description: tour.description,
+      images: [{
+        url: tourImages[tour.slug],
+        alt: `${tour.title} — Rafa Travel`,
+      }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: tour.title,
+      description: tour.description,
+      images: [tourImages[tour.slug]],
+    },
   };
 }
 
@@ -142,9 +163,36 @@ export default async function TourDetailPage({
   if (!tour) notFound();
 
   const related = getRelatedTours(slug, tour.type);
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristTrip',
+    name: tour.title,
+    description: tour.description,
+    image: `${siteConfig.url}${encodeURI(tourImages[tour.slug])}`,
+    url: `${siteConfig.url}/passeios/${tour.slug}`,
+    touristType: 'Private tour',
+    provider: {
+      '@type': 'TravelAgency',
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    offers: tour.priceFrom > 0 ? {
+      '@type': 'Offer',
+      price: tour.priceFrom,
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+      url: `${siteConfig.url}/passeios/${tour.slug}`,
+    } : undefined,
+  };
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+        }}
+      />
       <Navbar />
 
       {/* Breadcrumb */}

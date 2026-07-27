@@ -90,7 +90,7 @@ export async function POST(request: Request) {
               <td style="padding:10px 8px">${safe.email}</td>
             </tr>
           </table>
-          <p style="margin-top:24px;font-size:13px;color:#888">Rafa Travel · tukrafa.pt</p>
+          <p style="margin-top:24px;font-size:13px;color:#888">Rafa Travel · elrafatravel.com</p>
         </div>
       `,
     });
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
             <p style="margin:0 0 8px"><strong>Hora:</strong> ${safe.time}</p>
             <p style="margin:0"><strong>Pessoas:</strong> ${safe.people}</p>
           </div>
-          <p style="font-size:13px;color:#888;margin-top:24px">Obrigado por escolher a Rafa Travel! · tukrafa.pt</p>
+          <p style="font-size:13px;color:#888;margin-top:24px">Obrigado por escolher a Rafa Travel! · elrafatravel.com</p>
         </div>
       `,
     });

@@ -1,5 +1,19 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Analytics and production URL
+
+Copy `.env.example` to `.env.local` for local development and configure these
+same variables in the Vercel project:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://www.elrafatravel.com
+NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-Y5D4HVVT1N
+```
+
+The Google Analytics value is the GA4 Measurement ID from **Admin → Data
+streams → Web**. Vercel Web Analytics is included in the app and must also be
+enabled in the Vercel project dashboard.
+
 ## Getting Started
 
 First, run the development server:
