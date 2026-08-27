@@ -790,12 +790,24 @@ export const tourImages: Record<string, string> = Object.fromEntries(
   allTours.map((tour, index) => [tour.slug, downloadedImages[index % downloadedImages.length]])
 );
 
+Object.assign(tourImages, {
+  'belem-descobrimentos': '/rutadosdescubrimentos.jpg',
+  'chiado-poetico': '/chiado.jpg',
+  'cascais-cabo-da-roca': '/cascais.jpg',
+});
+
 export const tourImagePositions: Record<string, string> = Object.fromEntries(
   allTours.map((tour, index) => [
     tour.slug,
     downloadedImagePositions[index % downloadedImagePositions.length],
   ])
 );
+
+Object.assign(tourImagePositions, {
+  'belem-descobrimentos': '50% 58%',
+  'chiado-poetico': '50% 52%',
+  'cascais-cabo-da-roca': '50% 50%',
+});
 
 export function getTourBySlug(slug: string): TourDetail | undefined {
   return allTours.find((t) => t.slug === slug);

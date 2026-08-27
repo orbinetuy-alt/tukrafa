@@ -109,7 +109,8 @@ export function BookingModal({ tour, onClose }: BookingModalProps) {
       if (!res.ok) throw new Error();
       setConfirmationEmailSent(result.confirmationEmailSent !== false);
       setStep('success');
-      trackEvent('booking_request', {
+      trackEvent('generate_lead', {
+        form_name: 'reserva',
         tour_slug: tour.slug,
         tour_name: tour.title,
         people,

@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Playfair_Display, Inter } from 'next/font/google';
-import { Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/next';
-import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { siteConfig } from '@/lib/site';
 import './globals.css';
 
@@ -84,14 +82,28 @@ export default function RootLayout({
 
   return (
     <html lang="pt-PT" className={`${playfair.variable} ${inter.variable} h-full antialiased`}>
+      {googleAnalyticsId && (
+        <head>
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+          />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                window.gtag = gtag;
+                gtag('js', new Date());
+                gtag('config', '${googleAnalyticsId}');
+              `,
+            }}
+          />
+        </head>
+      )}
       <body className="min-h-full flex flex-col">
         {children}
         <Analytics />
-        {googleAnalyticsId && (
-          <Suspense fallback={null}>
-            <GoogleAnalytics measurementId={googleAnalyticsId} />
-          </Suspense>
-        )}
       </body>
     </html>
   );

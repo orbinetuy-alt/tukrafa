@@ -107,8 +107,13 @@ export default function Passeios() {
                     {tour.category === 'historico' ? t.categories.historical : tour.category === 'costa' ? t.categories.coast : tour.category === 'cultural' ? t.categories.cultural : categoryLabel[tour.category]}
                   </div>
                   {/* Price badge */}
-                  <div className="absolute bottom-3 right-3 bg-white rounded-full px-3 py-1.5 shadow text-sm font-bold text-brand-red">
-                    {tour.priceDisplay}
+                  <div className="absolute bottom-3 right-3 flex flex-col items-center rounded-xl bg-white px-3 py-1.5 text-brand-red shadow">
+                    <span className="text-sm font-bold leading-tight">{tour.priceDisplay}</span>
+                    {tour.priceFrom > 0 && (
+                      <span className="text-[10px] font-semibold leading-tight text-brand-dark/65">
+                        {t.perGroup}
+                      </span>
+                    )}
                   </div>
                 </div>
 
