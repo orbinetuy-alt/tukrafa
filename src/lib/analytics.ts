@@ -1,4 +1,4 @@
-type EventParameters = Record<string, string | number | boolean | undefined>;
+type EventParameters = Record<string, unknown>;
 
 declare global {
   interface Window {
