@@ -5,7 +5,12 @@ import {
 } from './bookings';
 import { BOOKING_TIME_ZONE } from './booking-config';
 import { createBookingCalendarEvent } from './google-calendar';
-import { isWhatsAppConfigured, notifyClientByWhatsApp, notifyRafaByWhatsApp } from './whatsapp';
+import {
+  isClientWhatsAppConfigured,
+  isRafaWhatsAppConfigured,
+  notifyClientByWhatsApp,
+  notifyRafaByWhatsApp,
+} from './whatsapp';
 import { isBookingEmailConfigured, sendPaidBookingEmails } from './booking-email';
 
 function notificationData(booking: BookingRecord) {
@@ -43,10 +48,10 @@ export async function fulfillPaidBooking(bookingId: string, paymentIntentId: str
       depositCents: booking.deposit_cents,
     }).then((eventId) => markBookingField(booking.id, 'calendar', eventId)),
   );
-  if (isWhatsAppConfigured() && !booking.client_notified_at) tasks.push(
+  if (isClientWhatsAppConfigured() && !booking.client_notified_at) tasks.push(
     notifyClientByWhatsApp(data).then(() => markBookingField(booking.id, 'client')),
   );
-  if (isWhatsAppConfigured() && !booking.rafa_notified_at) tasks.push(
+  if (isRafaWhatsAppConfigured() && !booking.rafa_notified_at) tasks.push(
     notifyRafaByWhatsApp(data).then(() => markBookingField(booking.id, 'rafa')),
   );
   if (isBookingEmailConfigured() && !booking.email_notified_at) tasks.push(

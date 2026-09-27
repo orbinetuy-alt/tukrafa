@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local agent/video authoring assets are not part of the application.
+    ".agents/**",
+    "videos/**",
   ]),
 ]);
 

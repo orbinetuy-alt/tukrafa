@@ -63,7 +63,12 @@ export async function POST(request: Request) {
     if (!booking) return NextResponse.json({ error: 'Este horário acabou de ser reservado. Escolha outro.' }, { status: 409 });
     bookingId = booking.id;
 
-    const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
+    // Keep test payments inside their Preview deployment. Production continues
+    // using the canonical public URL configured for the site.
+    const requestOrigin = new URL(request.url).origin;
+    const origin = process.env.VERCEL_ENV === 'production'
+      ? (process.env.NEXT_PUBLIC_SITE_URL ?? requestOrigin)
+      : requestOrigin;
     const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
       customer_email: email,
