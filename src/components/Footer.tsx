@@ -81,7 +81,7 @@ export default function Footer() {
           {/* Social icons */}
           <div className="flex items-center gap-3 mt-1">
             <a
-              href="https://wa.me/351910706688"
+              href="https://wa.me/351917777434"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
@@ -149,8 +149,8 @@ export default function Footer() {
           <h4 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">{t.contact}</h4>
           <ul className="flex flex-col gap-3 text-sm">
             <li>
-              <a href="https://wa.me/351910706688" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                +351 910 706 688
+              <a href="https://wa.me/351917777434" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                +351 917 777 434
               </a>
             </li>
             <li>

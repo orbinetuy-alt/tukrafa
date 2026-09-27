@@ -23,7 +23,8 @@ Eventos requeridos:
 - `checkout.session.async_payment_failed`
 - `checkout.session.expired`
 
-Copia el signing secret `whsec_...` en `STRIPE_WEBHOOK_SECRET`.
+Copia el signing secret `whsec_...` en `STRIPE_WEBHOOK_SECRET`. El secreto del
+webhook de prueba no sirve en producción: cada endpoint tiene uno diferente.
 
 ## 3. Google Calendar
 
@@ -35,41 +36,30 @@ Copia el signing secret `whsec_...` en `STRIPE_WEBHOOK_SECRET`.
 
 La clave privada debe conservar los saltos de línea como `\n`.
 
-## 4. WhatsApp Cloud API
+## 4. WhatsApp con ManyChat
 
-Añade el token permanente, el Phone Number ID y el número de Rafa en formato internacional sin `+`. Deben aprobarse estas dos plantillas:
+La cuenta de WhatsApp que envía los mensajes sigue siendo la conectada a
+ManyChat. El ID de la cuenta de WhatsApp Business no se usa directamente en el
+código.
 
-### `booking_confirmation`
+1. En ManyChat crea una automatización publicada que envíe la plantilla de
+   confirmación ya aprobada.
+2. La plantilla debe usar estos campos personalizados: `booking_tour`,
+   `booking_date`, `booking_time`, `booking_duration`, `booking_deposit`,
+   `booking_balance` y `booking_code`. El nombre del cliente usa el campo de
+   sistema `Nombre`.
+3. Copia el `flow_ns` desde la URL de esa automatización.
+4. En Vercel añade, tanto a Preview como a Production:
+   - `MANYCHAT_API_TOKEN`: token de **Settings > API**.
+   - `MANYCHAT_BOOKING_FLOW_NS`: identificador de la automatización publicada.
 
-Parámetros del cuerpo, en este orden:
+Para avisar también a Rafa, crea una segunda automatización y añade
+`MANYCHAT_RAFA_FLOW_NS`, `RAFA_WHATSAPP_NUMBER` (formato internacional sin `+`)
+y, opcionalmente, `RAFA_NOTIFICATION_EMAIL`.
 
-1. Nombre del cliente
-2. Tour
-3. Fecha
-4. Hora
-5. Duración
-6. Sinal pagado
-7. Importe restante
-8. Identificador de reserva
-
-Crear versiones `pt_PT`, `en_US` y `es`.
-
-### `new_paid_booking`
-
-Versión `pt_PT`, con parámetros:
-
-1. Nombre del cliente
-2. WhatsApp del cliente
-3. Email
-4. Tour
-5. Fecha
-6. Hora
-7. Duración
-8. Personas
-9. Punto de recogida
-10. Sinal pagado
-11. Importe restante
-12. Identificador de reserva
+ManyChat crea o localiza el contacto, carga los datos de la reserva en los
+campos personalizados y dispara la automatización. La plantilla es necesaria
+para poder iniciar la conversación fuera de la ventana de 24 horas.
 
 ## 5. Prueba antes de producción
 
@@ -82,4 +72,22 @@ Haz una compra con una tarjeta de prueba de Stripe y verifica, en este orden:
 5. Ambos reciben correo.
 6. GA4 recibe `purchase` con el ID de reserva y el importe de la seña.
 
-Solo después se cambia `STRIPE_SECRET_KEY` a producción y se crea un webhook de producción nuevo.
+## 6. Pase a producción
+
+1. En Stripe cambia al modo activo y completa cualquier requisito pendiente de
+   activación de la cuenta.
+2. Crea un **nuevo** endpoint activo en
+   `https://www.elrafatravel.com/api/stripe/webhook` con los cuatro eventos del
+   apartado 2.
+3. En Vercel configura para **Production**:
+   - `STRIPE_SECRET_KEY=sk_live_...`
+   - `STRIPE_WEBHOOK_SECRET=whsec_...` del endpoint activo.
+   - las tres variables de ManyChat indicadas arriba (o las dos del cliente si
+     todavía no se habilita el aviso interno a Rafa).
+4. Conserva las claves `sk_test_...` y el webhook de prueba únicamente en
+   **Preview**.
+5. Despliega a producción y realiza una compra real de importe controlado. No
+   uses números de tarjeta de prueba en modo activo.
+6. Comprueba el pago, la reserva en Neon, Google Calendar, el WhatsApp del
+   cliente, la notificación a Rafa y el correo. Después reembolsa la compra de
+   control desde Stripe si corresponde.

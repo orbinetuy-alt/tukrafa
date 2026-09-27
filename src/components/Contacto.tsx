@@ -116,7 +116,7 @@ export default function Contacto() {
             <div className="bg-white/10 rounded-2xl p-6 flex flex-col gap-5">
 
               <a
-                href="https://wa.me/351910706688"
+                href="https://wa.me/351917777434"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 group"
@@ -126,7 +126,7 @@ export default function Contacto() {
                 </div>
                 <div>
                   <p className="text-xs text-green-200 font-medium uppercase tracking-wide">WhatsApp</p>
-                  <p className="text-white font-semibold">+351 910 706 688</p>
+                  <p className="text-white font-semibold">+351 917 777 434</p>
                 </div>
               </a>
 
@@ -157,7 +157,7 @@ export default function Contacto() {
 
             {/* Direct WhatsApp CTA */}
             <a
-              href="https://wa.me/351910706688?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20passeios."
+              href="https://wa.me/351917777434?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20passeios."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-white font-semibold py-3.5 rounded-xl transition-colors"

@@ -98,7 +98,7 @@ export function BookingModal({ tour, onClose }: { tour: TourDetail; onClose: () 
             <div className="rounded-2xl bg-amber-50 border border-amber-200 p-5">
               <h3 className="font-bold text-amber-900">Este passeio é feito sob consulta</h3>
               <p className="text-sm text-amber-800 mt-2">Fale connosco para preparar a proposta e confirmar a disponibilidade.</p>
-              <a href="https://wa.me/351910706688" target="_blank" rel="noopener noreferrer" className="inline-flex mt-4 font-bold text-brand-green">Falar no WhatsApp →</a>
+              <a href="https://wa.me/351917777434" target="_blank" rel="noopener noreferrer" className="inline-flex mt-4 font-bold text-brand-green">Falar no WhatsApp →</a>
             </div>
           ) : step === 1 ? (
             <div>

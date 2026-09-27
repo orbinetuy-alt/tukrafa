@@ -61,7 +61,7 @@ export default function Hero() {
               {t.book}
             </Link>
             <Link
-              href="https://wa.me/351910706688"
+              href="https://wa.me/351917777434"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 border-2 border-gray-300 hover:border-brand-green text-gray-800 font-semibold px-7 py-3.5 rounded-full transition-colors bg-white/60"
